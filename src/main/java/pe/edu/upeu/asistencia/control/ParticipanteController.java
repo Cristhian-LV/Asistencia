@@ -1,5 +1,6 @@
 package pe.edu.upeu.asistencia.control;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -54,15 +55,16 @@ public class ParticipanteController {
     @FXML
     public void registrarParticipante(){
         Participante p = new Participante();
-        p.setDni(new SimpleStringProperty(txtDni.getText()));
-        p.setNombre(new SimpleStringProperty(txtNombres.getText()));
-        p.setApellidos(new SimpleStringProperty(txtApellidos.getText()));
+        p.setDni(txtDni.getText());
+        p.setNombre(txtNombres.getText());
+        p.setApellidos(txtApellidos.getText());
         p.setCarrera(cbxCarrera.getSelectionModel().getSelectedItem());
         p.setTipoParticipante(cbxTipoParticipante.getSelectionModel().getSelectedItem());
+        p.setEstado(true);
         if(indexE==-1){
             ps.save(p);
         }else{
-            ps.update(p,  indexE);
+            ps.update(p);
             indexE=-1;
         }
         limpiarFormulario();
@@ -91,7 +93,8 @@ public class ParticipanteController {
                             editarDatos(p, getIndex());
                         });
                         eliminarBtn.setOnAction(event -> {
-                            eliminarParticipante(getIndex());
+                            Participante p=getTableView().getItems().get(getIndex());
+                            eliminarParticipante(p.getDni());
                         });
                     }
                 @Override
@@ -109,24 +112,30 @@ public class ParticipanteController {
             opcColum.setCellFactory(cellFactory);
     }
     public void listarParticipantes(){
-        dniColum.setCellValueFactory(cellData->cellData.getValue().getDni());
-        nombreColum.setCellValueFactory(cellData->cellData.getValue().getNombre());
-        apellidoColum.setCellValueFactory(cellData->cellData.getValue().getApellidos());
+        dniColum.setCellValueFactory(cellData->
+                new SimpleStringProperty(cellData.getValue().getDni())
+                );
+        nombreColum.setCellValueFactory(cellData->
+                new SimpleStringProperty(cellData.getValue().getNombre())
+                );
+        apellidoColum.setCellValueFactory(cellData->
+                new SimpleStringProperty(cellData.getValue().getApellidos())
+        );
         carraraColum.setCellValueFactory(
                 cellData->new SimpleStringProperty(cellData.getValue().getCarrera().toString()));
         agregarAccionBotones();
         listaParticipantes=FXCollections.observableArrayList(ps.findAll());
         tableView.setItems(listaParticipantes);
     }
-    public void eliminarParticipante(int index){
-        ps.delete(index);
+    public void eliminarParticipante(String dni){
+        ps.delete(dni);
         listarParticipantes();
     }
 
     public void editarDatos(Participante p, int index){
-        txtDni.setText(p.getDni().getValue());
-        txtNombres.setText(p.getNombre().getValue());
-        txtApellidos.setText(p.getApellidos().getValue());
+        txtDni.setText(p.getDni());
+        txtNombres.setText(p.getNombre());
+        txtApellidos.setText(p.getApellidos());
         cbxCarrera.setValue(p.getCarrera());
         cbxTipoParticipante.setValue(p.getTipoParticipante());
         indexE=index;
