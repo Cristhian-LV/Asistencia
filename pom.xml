@@ -55,7 +55,6 @@
 			<version>21</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -74,13 +73,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- Hibernate dialect for SQLite -->
+		<!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-community-dialects -->
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-community-dialects</artifactId>
-			<version>6.4.4.Final</version>
 		</dependency>
-
 
 	</dependencies>
 
@@ -98,7 +95,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -109,7 +105,6 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<!-- Configuracion de inicio de clase principal  -->
 					<mainClass>pe.edu.upeu.asistencia.Aplication</mainClass>
 				</configuration>
 			</plugin>

@@ -21,92 +21,94 @@ import java.util.Map;
 public class MainguiController {
 
     @FXML
-    private BorderPane bp;
+    private MenuItem menuItem1, menuItem2, menuItem3, menuItem4;
     @FXML
-    MenuBar menuBar;
-    @FXML
-    TabPane tabPane;
-    @FXML
-    MenuItem menuItem1, menuItemC;
+    private MenuBar menuBar;
 
-    Menu menuEstilos=new Menu("Cambiar Estilos");
-    ComboBox<String> comboEstilo=new ComboBox<>();
-    CustomMenuItem customMenuItem=new CustomMenuItem(comboEstilo);
+    private ComboBox<String> comboBox=new ComboBox<>();
+    private CustomMenuItem customMenuEstilo=new CustomMenuItem(comboBox);;
+    private Menu menuEstilo=new Menu("Cambiar estilo");
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    BorderPane bp;
 
     @Autowired
-    ApplicationContext context;
-
+    private ApplicationContext context;
     @FXML
-    public void initialize(){
-        comboEstilo.getItems().addAll("Estilo por defecto","Estilo Oscuro"
-                ,"Estilo Azul","Estilo Rosado", "Estilo Verde");
-        comboEstilo.setOnAction(e->cambiarEstilo());
-        customMenuItem.setHideOnClick(false);
-        menuEstilos.getItems().add(customMenuItem);
-        menuBar.getMenus().addAll(menuEstilos);
-
-        MenuItemListener mIL=new MenuItemListener();
-        menuItem1.setOnAction(mIL::handle);
-        menuItemC.setOnAction(mIL::handle);
+    public void initialize() {
+        comboBox.getItems().addAll("Estilo por defecto", "Estilo Oscuro"
+                , "Estilo Azul", "Estilo Verde", "Estilo Rosado");
+        comboBox.setOnAction(e->cambiarEstilo());
+        customMenuEstilo.setHideOnClick(false);
+        menuEstilo.getItems().add(customMenuEstilo);
+        menuBar.getMenus().add(menuEstilo);
+        MenuItemListener miL=new MenuItemListener();
+        menuItem1.setOnAction(miL::handle);
+        menuItem2.setOnAction(miL::handle);
+        menuItem3.setOnAction(miL::handle);
+        menuItem4.setOnAction(miL::handle);
     }
-
+    @FXML
     public void cambiarEstilo(){
-        String estilo=comboEstilo.getSelectionModel().getSelectedItem();
+        String estiloSeleccionado=comboBox.getSelectionModel().getSelectedItem();
         Scene scene=bp.getScene();
         scene.getStylesheets().clear();
-        switch (estilo){
+        switch (estiloSeleccionado){
             case "Estilo Oscuro":
                 scene.getStylesheets().add(getClass().getResource("/css/estilo-oscuro.css").toExternalForm()); break;
             case "Estilo Azul":
                 scene.getStylesheets().add(getClass().getResource("/css/estilo-azul.css").toExternalForm()); break;
-            case "Estilo Rosado":
-                scene.getStylesheets().add(getClass().getResource("/css/estilo-rosado.css").toExternalForm()); break;
             case "Estilo Verde":
                 scene.getStylesheets().add(getClass().getResource("/css/estilo-verde.css").toExternalForm()); break;
-            default: break;
+            case "Estilo Rosado":
+                scene.getStylesheets().add(getClass().getResource("/css/estilo-rosado.css").toExternalForm()); break;
+            default:  break;
         }
     }
 
     class MenuItemListener{
         Map<String, String[]> menuConfig=Map.of(
-            "menuItem1", new  String[]{"/fxml/main_participante.fxml", "Reg.Parcipante", "T"},
-            "menuItemC", new  String[]{"/fxml/login.fxml", "Salir", "C"}
-        );
+                            "menuItem1",new String[]{"/fxml/main_participante.fxml","Participantes","T"},
+                            "menuItem2",new String[]{"/fxml/login.fxml","Salir","C"},
+                            "menuItem3",new String[]{"/fxml/main_asistencia.fxml","Asistencia","T"},
+                            "menuItem4",new String[]{"/fxml/main_asistencia.fxml","Asistencia","T"}
+                                );
 
-        public void handle(ActionEvent e){
-                String id=((MenuItem)e.getSource()).getId();
-                if(menuConfig.containsKey(id)){
-                    String[] items=menuConfig.get(id);
-                    if(items[2].equals("C")){
-                        Platform.exit();
-                        System.exit(0);
-                    }else{
-                        abrirTabPaneFXML(items[0],items[1]);
-                    }
+        public void handle(ActionEvent e) {
+            String id= ( (MenuItem) e.getSource() ).getId();
+            if(menuConfig.containsKey(id)){
+                String[] mi=menuConfig.get(id);
+                if(mi[2].equals("C")){
+                    Platform.exit();
+                    System.exit(0);
+                }else{
+                    abrirArchivoFXML(mi[0],mi[1]);
                 }
+            }
         }
-        private void abrirTabPaneFXML(String fxmlPath, String tittle){
+
+        public void abrirArchivoFXML(String filename, String tittle){
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
-                fxmlLoader.setControllerFactory(context::getBean);
-                Parent root = fxmlLoader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(filename));
+            loader.setControllerFactory(context::getBean);
+            Parent root = loader.load();
 
-                ScrollPane  scrollPane = new  ScrollPane(root);
-                scrollPane.setFitToWidth(true);
-                scrollPane.setFitToHeight(true);
+            ScrollPane scrollPane = new ScrollPane(root);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setFitToHeight(true);
+            Tab newTab = new  Tab(tittle, scrollPane);
+            tabPane.getTabs().clear();
+            tabPane.getTabs().add(newTab);
 
-                Tab newTab = new Tab(tittle, scrollPane);
-                tabPane.getTabs().clear();
-                tabPane.getTabs().add(newTab);
-
-            }catch (IOException ex){
+            }catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
     }
 
     class MenuListener{
-        public void handle(Event e){
+        public void handle(Event e) {
 
         }
     }
