@@ -21,13 +21,13 @@ import java.util.Map;
 public class MainguiController {
 
     @FXML
-    private MenuItem menuItem1, menuItem2, menuItem3, menuItem4;
+    private MenuItem menuItem1, menuItem2;
     @FXML
     private MenuBar menuBar;
 
     private ComboBox<String> comboBox=new ComboBox<>();
     private CustomMenuItem customMenuEstilo=new CustomMenuItem(comboBox);;
-    private Menu menuEstilo=new Menu("Cambiar estilo");
+    private Menu menuEstilo=new Menu("Cambiar Estilos");
     @FXML
     private TabPane tabPane;
     @FXML
@@ -46,8 +46,6 @@ public class MainguiController {
         MenuItemListener miL=new MenuItemListener();
         menuItem1.setOnAction(miL::handle);
         menuItem2.setOnAction(miL::handle);
-        menuItem3.setOnAction(miL::handle);
-        menuItem4.setOnAction(miL::handle);
     }
     @FXML
     public void cambiarEstilo(){
